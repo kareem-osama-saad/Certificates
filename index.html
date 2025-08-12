@@ -1,56 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Certificates</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-<style>
-    body {
-        font-family: 'Poppins', sans-serif;
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Certificates</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
         margin: 0;
         padding: 20px;
         background: linear-gradient(135deg, #1e3c72, #2a5298);
         color: white;
         min-height: 100vh;
-    }
-    h1 {
+      }
+      h1 {
         text-align: center;
         margin-bottom: 30px;
         font-weight: 600;
-    }
-    .gallery {
+      }
+      .gallery {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 20px;
         max-width: 1200px;
         margin: auto;
-    }
-    .card {
-        background: rgba(255,255,255,0.1);
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.1);
         border-radius: 10px;
         padding: 15px;
         text-align: center;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .card:hover {
+      }
+      .card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-    }
-    canvas {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      }
+      canvas {
         width: 100%;
         border-radius: 8px;
         margin-bottom: 10px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         cursor: pointer;
-    }
-    .certificate-title {
+      }
+      .certificate-title {
         font-size: 14px;
         margin-bottom: 10px;
         color: #ddd;
-    }
-    .btn {
+      }
+      .btn {
         display: inline-block;
         margin: 5px;
         padding: 8px 15px;
@@ -61,12 +64,12 @@
         color: white;
         background: #00b894;
         transition: background 0.3s ease;
-    }
-    .btn:hover {
+      }
+      .btn:hover {
         background: #019875;
-    }
-    /* Popup */
-    .popup {
+      }
+      /* Popup */
+      .popup {
         display: none;
         position: fixed;
         z-index: 999;
@@ -75,16 +78,16 @@
         top: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0,0,0,0.85);
-    }
-    .popup-content {
+        background-color: rgba(0, 0, 0, 0.85);
+      }
+      .popup-content {
         margin: auto;
         display: block;
         width: 80%;
         height: 80%;
         border-radius: 10px;
-    }
-    .close {
+      }
+      .close {
         position: absolute;
         top: 20px;
         right: 35px;
@@ -92,42 +95,64 @@
         font-size: 40px;
         font-weight: bold;
         cursor: pointer;
-    }
-    .close:hover {
+      }
+      .close:hover {
         color: #bbb;
-    }
-</style>
-</head>
-<body>
+      }
+    </style>
+  </head>
+  <body>
+    <h1>My Certificates</h1>
 
-<h1>My Certificates</h1>
+    <div class="gallery" id="gallery"></div>
 
-<div class="gallery" id="gallery"></div>
+    <!-- Popup -->
+    <div id="popup" class="popup" aria-modal="true" role="dialog">
+      <span
+        class="close"
+        onclick="closePopup()"
+        role="button"
+        aria-label="Close popup"
+        >&times;</span
+      >
+      <iframe
+        id="popup-frame"
+        class="popup-content"
+        title="Certificate preview"
+      ></iframe>
+    </div>
 
-<!-- Popup -->
-<div id="popup" class="popup">
-    <span class="close" onclick="closePopup()">&times;</span>
-    <iframe id="popup-frame" class="popup-content"></iframe>
-</div>
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
+    <script>
+      const pdfFiles = [
+        {
+          file: "certificate-of-completion-for-programming-foundations-level-1.pdf",
+          title: "Programming Foundations - Level 1",
+        },
+        {
+          file: "certificate-of-completion-for-algorithms-problem-solving-level-1.pdf",
+          title: "Algorithms & Problem-Solving - Level 1",
+        },
+        {
+          file: "certificate-of-completion-for-introduction-to-programming-using-c-level-1.pdf",
+          title: "Programming Using C++ - Level 1",
+        },
+      ];
 
-<!-- PDF.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
-<script>
-    const pdfFiles = [
-        { file: "certificate-of-completion-for-programming-foundations-level-1.pdf", title: "Programming Foundations - Level 1" },
-        { file: "certificate-of-completion-for-algorithms-problem-solving-level-1.pdf", title: "Algorithms & Problem-Solving - Level 1" },
-        { file: "certificate-of-completion-for-introduction-to-programming-using-c-level-1.pdf", title: "Programming Using C++ - Level 1" }
-    ];
+      const gallery = document.getElementById("gallery");
+      const popup = document.getElementById("popup");
+      const popupFrame = document.getElementById("popup-frame");
 
-    const gallery = document.getElementById("gallery");
-    const popup = document.getElementById("popup");
-    const popupFrame = document.getElementById("popup-frame");
-
-    pdfFiles.forEach(cert => {
+      pdfFiles.forEach((cert) => {
         const card = document.createElement("div");
         card.className = "card";
 
         const canvas = document.createElement("canvas");
+        canvas.setAttribute(
+          "aria-label",
+          `Thumbnail preview for ${cert.title} certificate`
+        );
         canvas.addEventListener("click", () => openPopup(cert.file));
         card.appendChild(canvas);
 
@@ -141,33 +166,44 @@
         downloadBtn.download = cert.file;
         downloadBtn.textContent = "Download";
         downloadBtn.className = "btn";
+        downloadBtn.setAttribute(
+          "aria-label",
+          `Download certificate: ${cert.title}`
+        );
         card.appendChild(downloadBtn);
 
         gallery.appendChild(card);
 
         // Render thumbnail
-        pdfjsLib.getDocument(cert.file).promise.then(pdf => {
-            pdf.getPage(1).then(page => {
-                const viewport = page.getViewport({ scale: 0.8 });
-                const context = canvas.getContext("2d");
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-                page.render({ canvasContext: context, viewport: viewport });
-            });
+        pdfjsLib.getDocument(cert.file).promise.then((pdf) => {
+          pdf.getPage(1).then((page) => {
+            const viewport = page.getViewport({ scale: 0.8 });
+            const context = canvas.getContext("2d");
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            page.render({ canvasContext: context, viewport: viewport });
+          });
         });
-    });
+      });
 
-    function openPopup(pdfFile) {
+      function openPopup(pdfFile) {
         popup.style.display = "block";
-        // استخدام PDF.js viewer الرسمي لعرض كامل الميزات
-        popupFrame.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfFile)}`;
-    }
+        popupFrame.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(
+          pdfFile
+        )}`;
+      }
 
-    function closePopup() {
+      function closePopup() {
         popup.style.display = "none";
         popupFrame.src = "";
-    }
-</script>
+      }
 
-</body>
+      // Close popup if clicking outside iframe
+      popup.addEventListener("click", (e) => {
+        if (e.target === popup) {
+          closePopup();
+        }
+      });
+    </script>
+  </body>
 </html>
