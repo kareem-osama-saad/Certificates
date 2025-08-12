@@ -139,6 +139,8 @@
     <!-- PDF.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
     <script>
+      const baseURL = "https://kareem-osama-saad.github.io/Certificates/";
+
       const pdfFiles = [
         {
           file: "certificate-of-completion-for-programming-foundations-level-1.pdf",
@@ -157,7 +159,6 @@
       const gallery = document.getElementById("gallery");
       const popup = document.getElementById("popup");
       const popupFrame = document.getElementById("popup-frame");
-      const closeBtn = popup.querySelector(".close");
 
       pdfFiles.forEach((cert) => {
         const card = document.createElement("div");
@@ -178,7 +179,7 @@
         card.appendChild(title);
 
         const downloadBtn = document.createElement("a");
-        downloadBtn.href = cert.file;
+        downloadBtn.href = baseURL + cert.file;
         downloadBtn.download = cert.file;
         downloadBtn.textContent = "Download";
         downloadBtn.className = "btn";
@@ -190,9 +191,9 @@
 
         gallery.appendChild(card);
 
-        // Render thumbnail
+        // Render thumbnail using PDF.js
         pdfjsLib
-          .getDocument(cert.file)
+          .getDocument(baseURL + cert.file)
           .promise.then((pdf) => {
             pdf.getPage(1).then((page) => {
               const viewport = page.getViewport({ scale: 0.8 });
@@ -204,17 +205,14 @@
           })
           .catch((err) => {
             console.error("Error loading PDF:", err);
-            // Optional: عرض رسالة خطأ أو صورة بديلة
           });
       });
 
       function openPopup(pdfFile) {
         popup.style.display = "block";
         popup.setAttribute("aria-hidden", "false");
-        popupFrame.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(
-          pdfFile
-        )}`;
-        popup.focus();
+        popupFrame.src = baseURL + pdfFile;
+        popupFrame.focus();
       }
 
       function closePopup() {
@@ -223,14 +221,14 @@
         popupFrame.src = "";
       }
 
-      // إغلاق البوب أب بالنقر على الخلفية (خارج الإطار)
+      // Close popup on clicking outside iframe
       popup.addEventListener("click", (e) => {
         if (e.target === popup) {
           closePopup();
         }
       });
 
-      // دعم إغلاق البوب أب بزر Escape من الكيبورد
+      // Close popup on Escape key
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && popup.style.display === "block") {
           closePopup();
